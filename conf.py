@@ -1,14 +1,15 @@
 import os
+import subprocess
 import sys
-from subprocess import call
-from test import Env
+from test import CmdGroup
 from typing import Optional
 
 
-class Printer(Env):
+class Printer(CmdGroup):
     def __init__(self, print_string: str = "", dir: Optional[str] = None):
+        super().__init__()
         self.print_string = print_string
-        self.dir = os.path.expanduser("~/Desktop") if dir is not None else dir
+        self.dir = os.path.expanduser(dir) if dir is not None else dir
 
         self.commands = {"run": self.run}
 
@@ -27,9 +28,9 @@ class Printer(Env):
         except:
             return
 
-        call("ls -l")
+        subprocess.run(["ls", "-l"])
 
 
-environments: dict[str, Env] = {
-    "printer": Printer(print_string="environment 1's string", dir="~/Desktop"),
+environments: dict[str, CmdGroup] = {
+    "printer": Printer(print_string="environment 1's string", dir="~/Raven"),
 }
