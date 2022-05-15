@@ -2,35 +2,41 @@ import os
 import subprocess
 import sys
 from test import CmdGroup
-from typing import Optional
 
 
-class Printer(CmdGroup):
-    def __init__(self, print_string: str = "", dir: Optional[str] = None):
+class Directory(CmdGroup):
+    """
+    Commands for editing a directory
+    """
+    def __init__(self, dir: str):
         super().__init__()
-        self.print_string = print_string
-        self.dir = os.path.expanduser(dir) if dir is not None else dir
+        self.dir = os.path.expanduser(dir)
 
-        self.commands = {"run": self.run}
+        self.commands = {"ls": self.ls, "chdir": self.chdir}
 
-    def chdir(self):
-        if self.dir is not None:
-            try:
-                os.chdir(self.dir)
-                print(f"{os.getcwd()}")
-            except:
-                print(f"Could not open dir {self.dir}", file=sys.stderr)
-                return
+    def chdir(self, dir=None):
+        if dir is None:
+            dir = self.dir
+        try:
+            os.chdir(self.dir)
+        except:
+            print(f"Could not open dir {self.dir}", file=sys.stderr)
+            return
 
-    def run(self):
+    def ls(self, dir=None):
+        """
+        Help text for ls.
+        """
+        if dir is None:
+            dir = self.dir
         try:
             self.chdir()
         except:
             return
 
-        subprocess.run(["ls", "-l"])
+        subprocess.run(["ls"])
 
 
-environments: dict[str, CmdGroup] = {
-    "printer": Printer(print_string="environment 1's string", dir="~/Raven"),
+groups: dict[str, CmdGroup] = {
+    "home": Directory("~/"),
 }
