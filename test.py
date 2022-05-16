@@ -6,8 +6,9 @@ from typing import Callable
 
 
 class CmdGroup:
-    def __init__(self):
+    def __init__(self, aliases=[]):
         self.commands: dict[str, Callable] = {}
+        self.aliases = aliases
 
 
 def primary_argparse(cmd_groups: dict[str, CmdGroup]):
@@ -22,20 +23,20 @@ A composable, configurable command toolkit with execution engine.
         required=True,
     )
     for (name, group) in cmd_groups.items():
-        group_parser = subparsers.add_parser(name)
+        group_parser = subparsers.add_parser(name, aliases=group.aliases)
         cmd_group_subparser = group_parser.add_subparsers(
             dest="cmd",
             title="Command to run",
             required=True,
         )
 
-        for cmd_name, func in group.commands.items():
+        for cmd_name, cmd_func in group.commands.items():
             cmd_subparser = cmd_group_subparser.add_parser(
                 cmd_name,
-                help=func.__doc__,
+                help=cmd_func.__doc__,
             )
 
-            fn_sig = inspect.signature(func)
+            fn_sig = inspect.signature(cmd_func)
             for param in fn_sig.parameters.values():
                 cmd_subparser.add_argument(
                     "--" + param.name.replace("_", "-"),
