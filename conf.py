@@ -25,7 +25,7 @@ class Directory(CmdGroup):
 
     def ls(self, dir=None):
         """
-        Help text for ls.
+Run ls in a given directory or the default.
         """
         if dir is None:
             dir = self.dir

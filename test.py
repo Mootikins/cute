@@ -18,17 +18,22 @@ A composable, configurable command toolkit with execution engine.
 
     subparsers = parser.add_subparsers(
         dest="cmd_group",
-        help="Command group to select a command from",
+        title="Command groups",
+        required=True,
     )
     for (name, group) in cmd_groups.items():
         group_parser = subparsers.add_parser(name)
         cmd_group_subparser = group_parser.add_subparsers(
             dest="cmd",
-            help="Command to run",
+            title="Command to run",
+            required=True,
         )
 
         for cmd_name, func in group.commands.items():
-            cmd_subparser = cmd_group_subparser.add_parser(cmd_name)
+            cmd_subparser = cmd_group_subparser.add_parser(
+                cmd_name,
+                help=func.__doc__,
+            )
 
             fn_sig = inspect.signature(func)
             for param in fn_sig.parameters.values():
