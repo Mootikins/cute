@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+from conf.args import primary_argparse
+
+
+def main():
+    # TODO: consider adding dynamic conf dir
+    # XDG_CONFIG_HOME? hidden dir in home folder?
+    from conf import groups
+
+    parser = primary_argparse(groups)
+    args = parser.parse_args()
+
+    cmd_group = groups[args.cmd_group]
+    cmd = getattr(cmd_group, args.cmd)
+    cmd()
+
+    # cmd_group.commands[args.command[0]](args.command_args)
+
+
+if __name__ == "__main__":
+    main()

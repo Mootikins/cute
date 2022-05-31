@@ -2,16 +2,15 @@ import os
 import subprocess
 import sys
 
-import test
+from . import lib
 
-
-class Directory(test.CmdGroup):
+class Directory(lib.CmdGroup):
     """
     Commands for editing a directory
     """
 
-    def __init__(self, dir: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, dir: str):
+        super().__init__()
         self.dir = os.path.expanduser(dir)
 
         self.commands = {"ls": self.ls, "chdir": self.chdir}
@@ -27,7 +26,7 @@ class Directory(test.CmdGroup):
 
     def ls(self, dir=None):
         """
-Run ls in a given directory or the default.
+        Run ls in a given directory or the default.
         """
         if dir is None:
             dir = self.dir
@@ -37,8 +36,3 @@ Run ls in a given directory or the default.
             return
 
         subprocess.run(["ls"])
-
-
-groups: dict[str, test.CmdGroup] = {
-    "home": Directory("~/"),
-}
